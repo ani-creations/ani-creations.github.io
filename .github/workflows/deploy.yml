@@ -1,78 +1,79 @@
-name: Build and Deploy to GitHub Pages
+name: Build & Deploy to gh-pages
 
 on:
   push:
-    branches: [ "master" ]   # or your default branch
+    branches: [ "main" ]   # change to your default branch if needed
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write        # needed for checkout + pushing (peaceiris uses token)
   pages: write
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "gh-pages-deploy"
   cancel-in-progress: false
 
 jobs:
-  # First: Node.js build
-  node-build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: Setup Node.js (20.x)
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "20"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Enable Corepack & ensure pnpm available
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+          pnpm -v
 
-      - name: Build with Node.js
-        run: npm run build
-
-      - name: Upload Node build artifact
-        uses: actions/upload-artifact@v4
+      - name: Cache pnpm store
+        uses: actions/cache@v4
         with:
-          name: node-dist
-          path: dist    # 👈 change this if your output folder is different
+          path: ~/.pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
 
-  # Second: Jekyll build using Node output
-  jekyll-build:
-    runs-on: ubuntu-latest
-    needs: node-build
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Install dependencies (pnpm)
+        run: pnpm install --frozen-lockfile
 
-      - name: Download Node build artifact
-        uses: actions/download-artifact@v4
+      - name: Run lint (oxlint / eslint) — optional
+        # assumes you have a script "lint" in package.json e.g. "oxlint" or "eslint"
+        run: pnpm run lint
+        continue-on-error: false
+
+      - name: TypeScript type check
+        # assumes package.json has "type-check" or "tsc --noEmit"
+        run: pnpm run type-check
+
+      - name: Build (vite / rollup / rollup-vite)
+        run: pnpm run build
+
+      - name: Verify build output
+        run: |
+          echo "Build output directory contents:"
+          ls -la ./dist || ls -la ./build || echo "change publish_dir in workflow if your build outputs elsewhere"
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: node-dist
-          path: dist
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist                # <-- change this to your output dir if needed (e.g. ./build)
+          publish_branch: gh-pages           # branch to push the static site to
+          # options you can enable:
+          # user_name: 'github-actions[bot]'
+          # user_email: 'github-actions[bot]@users.noreply.github.com'
+          keep_files: false
+          force_orphan: true
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./dist          # 👈 make Jekyll use the Node build folder
-          destination: ./_site
-
-      - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v3
-
-  # Third: Deploy
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: jekyll-build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Post-deploy message
+        run: echo "Deployed to gh-pages branch (publish_dir: ./dist)."
