@@ -1,20 +1,13 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="Welcome to AniCreations-V2" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/chat">Chat</RouterLink>
-      </nav>
-    </div>
+    <nav>
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/chat">Chat</RouterLink>
+    </nav>
   </header>
 
   <RouterView />
@@ -24,6 +17,8 @@ import HelloWorld from './components/HelloWorld.vue'
 header {
   line-height: 1.5;
   max-height: 100vh;
+  position-anchor: top left;
+  position: fixed;
 }
 
 .logo {
@@ -32,10 +27,12 @@ header {
 }
 
 nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+  position: fixed;
+  top: 0;
+  left: 2rem;
+  margin: 0;
+  padding: 1rem;
+  z-index: 1000; /* keeps nav above other content */
 }
 
 nav a.router-link-exact-active {
