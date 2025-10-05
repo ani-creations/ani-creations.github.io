@@ -1,8 +1,8 @@
 name: Build & Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [ "master" ]   # change if your default branch is different
+  #push:
+    #branches: [ "master" ]   # change if your default branch is different
   workflow_dispatch:
 
 permissions:
