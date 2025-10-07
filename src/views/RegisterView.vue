@@ -1,11 +1,27 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useFirebaseStore } from '../stores/firebase'
 
 defineProps<{
   msg: string
 }>()
 
+const { firebaseApp } = useFirebaseStore();
+
 const username = ref("Mr. Sir");
+
+function signInWithGoogle() {
+  const provider = new firebaseApp.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        // user is signed in here
+        // auth.onAuthStateChanged will handle UI update, so no need to do it here
+      })
+      .catch((error) => {
+        console.error('Google Sign-In Error:', error.message);
+        alert("Failed to sign in: " + error.message);
+      });
+}
 </script>
 
 <template>
@@ -16,9 +32,9 @@ const username = ref("Mr. Sir");
     <input v-model="username"/>
 
     <h2 class="divider">-- or --</h2>
-    
+
     <h4>Sign in with Google</h4>
-    <h1>Tmp until firebase</h1>
+    <button @click="signInWithGoogle">Sign in with Google</button>
   </div>
 </template>
 
