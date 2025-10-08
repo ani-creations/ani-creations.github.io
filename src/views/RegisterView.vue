@@ -1,24 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useFirebaseStore } from '../stores/firebase'
+import firebase from 'firebase/compat/app';
 
 defineProps<{
 	msg: string
 }>()
 
-const firebaseApp = useFirebaseStore()
-
-const username = ref('Mr. Sir')
-
-const auth = firebaseApp.firebaseApp
+const username = ref('Mr. Sir');
 
 function signInWithGoogle() {
-	const provider = new firebaseApp.auth.GoogleAuthProvider()
-	auth
-		.signInWithPopup(provider)
+	const provider = new firebase.auth.GoogleAuthProvider();
+	firebase.auth().signInWithPopup(provider)
 		.then((result) => {
 			// user is signed in here
 			// auth.onAuthStateChanged will handle UI update, so no need to do it here
+
+			console.log('Google Sign-In Success:', result.user);
 		})
 		.catch((error) => {
 			console.error('Google Sign-In Error:', error.message)

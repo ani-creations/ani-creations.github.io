@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia'
-import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
-import { getDatabase } from 'firebase/database'
+import firebase from 'firebase/compat/app';
 
 export const useFirebaseStore = defineStore('firebase', {
 	state: () => {
@@ -14,16 +12,15 @@ export const useFirebaseStore = defineStore('firebase', {
 			messagingSenderId: '493360800224',
 			appId: '1:493360800224:web:ee718031c607acaf8ecb85',
 			measurementId: 'G-4V7H16YMW1',
-		}
+		};
 
-		const firebaseApp = initializeApp(firebaseConfig)
-		const firebaseFirestore = getFirestore(firebaseApp)
-		const firebaseDatabase = getDatabase(firebaseApp)
+	firebase.initializeApp(firebaseConfig);
+	const firebaseDatabase = firebase.database();
+	const firebaseAuth = firebase.auth();
 
 		return {
 			firebaseConfig,
-			firebaseApp,
-			firebaseFirestore,
+			firebaseAuth,
 			firebaseDatabase,
 		}
 	},
