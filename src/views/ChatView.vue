@@ -1,15 +1,15 @@
 <template>
-  <div class="chat">
-    <h1>This is an chat page</h1>
-  </div>
+	<div class="chat">
+		<h1>This is an chat page</h1>
+	</div>
 </template>
 
 <style scoped>
 @media (min-width: 1024px) {
-  .chat {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+	.chat {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+	}
 }
 </style>

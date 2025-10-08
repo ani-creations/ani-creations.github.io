@@ -1,6 +1,7 @@
 # ani-creations
 
-## Collaberation strategy: 
+## Collaberation strategy:
+
 Gitflow Workflow: make new branches for features (make branch, make issue, make pull request to develop branch eventually) and hotfix (same)
 then to make final for build, use develop branch to put it into master later
 

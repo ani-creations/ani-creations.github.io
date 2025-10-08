@@ -1,11 +1,9 @@
 <script setup lang="ts">
 defineProps<{
-  msg: string
+	msg: string
 }>()
 </script>
 
 <template>
-  <div class="ChatMessages">
-    
-  </div>
+	<div class="ChatMessages"></div>
 </template>

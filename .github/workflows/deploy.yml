@@ -2,7 +2,7 @@ name: Build & Deploy to GitHub Pages
 
 on:
   #push:
-    #branches: [ "master" ]   # change if your default branch is different
+  #branches: [ "master" ]   # change if your default branch is different
   workflow_dispatch:
 
 permissions:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: 'pages'
   cancel-in-progress: false
 
 jobs:
@@ -59,7 +59,7 @@ jobs:
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist   # 👈 replace if your build outputs to a different dir
+          path: ./dist # 👈 replace if your build outputs to a different dir
 
   deploy:
     environment:

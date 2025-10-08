@@ -1,13 +1,11 @@
 <script setup lang="ts">
 defineProps<{
-  msg: string;
-  date: string;
-  user: string;
+	msg: string
+	date: string
+	user: string
 }>()
 </script>
 
 <template>
-  <div class="message">
-    
-  </div>
+	<div class="message"></div>
 </template>
