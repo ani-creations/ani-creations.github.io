@@ -25,7 +25,7 @@ function signInWithGoogle() {
 </script>
 
 <template>
-	<div class="RegisterBox">
+	<main>
 		<h1>Register your account</h1>
 
 		<h4>Username:</h4>
@@ -34,11 +34,11 @@ function signInWithGoogle() {
 		<h2 class="divider">-- or --</h2>
 
 		<button @click="signInWithGoogle"><img class="coolImg" src="https://www.gstatic.com/marketing-cms/assets/images/d5/dc/cfe9ce8b4425b410b49b7f2dd3f3/g.webp=s96-fcrop64=1,00000000ffffffff-rw"/>        Sign in with Google</button>
-	</div>
+	</main>
 </template>
 
 <style scoped>
-.RegisterBox {
+main {
 	align-items: center;
 	text-align: center;
 	align-content: center;
