@@ -31,14 +31,11 @@ jobs:
       - name: Verify pnpm install
         run: pnpm --version
 
-      - name: Build It
-        run: pnpm run build
-
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
           start: pnpm start
-          wait-on: 'http://localhost:5173'
+          wait-on: 'http://localhost:4173'
           record: true
           parallel: true
         env:
