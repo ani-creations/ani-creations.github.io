@@ -1,0 +1,46 @@
+name: Cypress Tests
+on: 
+  push:
+    branches: ["master", "develop"]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Setup pnpm — automatically uses the version from package.json ("packageManager" field)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify pnpm install
+        run: pnpm --version
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          start: pnpm start
+          build: pnpm run build
+          wait-on: 'http://localhost:4173'
+          record: true
+          parallel: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
