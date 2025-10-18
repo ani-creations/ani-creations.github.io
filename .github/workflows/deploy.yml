@@ -50,6 +50,17 @@ jobs:
       - name: TypeScript check
         run: pnpm run type-check
 
+      - name: Vitest Unit Testing
+        run: pnpm test:unit -- --run
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          start: pnpm start
+          wait-on: 'http://localhost:4173'
+          record: true
+          parallel: true
+
       - name: Build site (vite/rollup)
         run: pnpm run build
 
@@ -60,6 +71,9 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist # 👈 replace if your build outputs to a different dir
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     environment:
